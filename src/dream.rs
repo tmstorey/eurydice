@@ -108,7 +108,7 @@ fn adjust_intensity(
     if changed {
         if let Ok(mut text) = text_query.single_mut() {
             //**text = format!("Intensity: {:.2}", settings.intensity);
-            **text = format!("");
+            **text = String::new();
         }
     }
 }
