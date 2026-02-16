@@ -36,8 +36,8 @@ const NUM_STEPS: usize = 80;
 
 const FINGER_PATH: &str = "character/finger.gltf";
 /// Scale finger model down and widen to fit the corridor.
-const FINGER_SCALE: f32 = 0.6;
-const FINGER_X_SCALE: f32 = 1.1 / FINGER_SCALE;
+const FINGER_SCALE: f32 = 1.0;
+const FINGER_X_SCALE: f32 = 1.0;
 
 /// Yaw delta (radians) from initial direction to count as "looked behind".
 const LOOK_BEHIND_THRESHOLD: f32 = 2.6;

@@ -15,5 +15,5 @@ pub enum Sections {
 #[derive(Resource, Default)]
 pub struct PlotFlags {
     pub player_looked_behind: bool,
-    pub chevron_appeared: bool,
+    pub chevron_count: u32,
 }

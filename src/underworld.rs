@@ -207,7 +207,7 @@ fn setup_underworld(
 
     // Position player at corridor entrance facing north (-Z), past the front wall.
     if let Ok((mut transform, mut look)) = player.single_mut() {
-        let spawn_z = -(WALL_WIDTH + 1.0);
+        let spawn_z = -(WALL_WIDTH + 2.0);
         let floor_y = corridor_floor_height(0.0, spawn_z, &noise);
         transform.translation = Vec3::new(0.0, floor_y + EYE_HEIGHT, spawn_z);
         look.yaw = 0.0;
@@ -294,7 +294,7 @@ fn underworld_terrain_follow(
         CORRIDOR_HALF_WIDTH - CLAMP_MARGIN,
     );
     let pool_edge = POOL_Z + POOL_SIZE * 0.5 + CLAMP_MARGIN;
-    transform.translation.z = transform.translation.z.clamp(pool_edge, 0.0);
+    transform.translation.z = transform.translation.z.clamp(pool_edge, -WALL_WIDTH);
 
     // Follow floor height.
     let floor_y = corridor_floor_height(transform.translation.x, transform.translation.z, &noise);

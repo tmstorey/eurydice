@@ -161,6 +161,7 @@ fn player_movement(
     keyboard: Res<ButtonInput<KeyCode>>,
     mut query: Query<&mut Transform, With<Player>>,
     time: Res<Time>,
+    section: Res<State<Sections>>,
 ) {
     let Ok(mut transform) = query.single_mut() else {
         return;
@@ -177,7 +178,12 @@ fn player_movement(
         movement -= forward_xz;
     }
 
-    transform.translation += movement * MOVE_SPEED * time.delta_secs();
+    let move_speed = match **section {
+        Sections::Chase => MOVE_SPEED,
+        _ => MOVE_SPEED / 2.0,
+    };
+
+    transform.translation += movement * move_speed * time.delta_secs();
 }
 
 const ARMS_6F_PATH: &str = "character/arms-6finger.gltf";

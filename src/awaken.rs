@@ -2,6 +2,7 @@
 
 use bevy::prelude::*;
 use bevy::scene::SceneInstanceReady;
+use bevy::window::{CursorGrabMode, CursorOptions};
 
 use crate::player::{Player, PlayerLook};
 use crate::sections::{PlotFlags, Sections};
@@ -20,7 +21,7 @@ const ROOM_PATH: &str = "room/room.gltf";
 const NPC_PATH: &str = "character/character.gltf";
 const ALT_PATH: &str = "character/base.gltf";
 const ANIM_SITTING: usize = 26;
-const EXIT_DELAY: f32 = 10.0;
+const EXIT_DELAY: f32 = 5.0;
 
 #[derive(Resource)]
 struct AwakenState {
@@ -87,7 +88,7 @@ fn setup_awaken(
     // NPC in the chair, only if the player didn't look behind on the stairs
     if !flags.player_looked_behind {
         let mut graph = AnimationGraph::new();
-        let path = if flags.chevron_appeared {
+        let path = if flags.chevron_count > 1 {
             NPC_PATH
         } else {
             ALT_PATH
@@ -143,8 +144,14 @@ fn awaken_timer(
     }
 }
 
-fn exit_awaken(mut commands: Commands) {
+fn exit_awaken(mut commands: Commands, mut cursor: Query<&mut CursorOptions>) {
     commands.remove_resource::<AwakenState>();
     commands.remove_resource::<AwakenNpcAnimation>();
     commands.insert_resource(GlobalAmbientLight::NONE);
+
+    let Ok(mut cursor) = cursor.single_mut() else {
+        return;
+    };
+    cursor.grab_mode = CursorGrabMode::None;
+    cursor.visible = true;
 }

@@ -377,8 +377,8 @@ fn update_npc_chevron(
         chevron_transform.rotation = Rot2::radians(angle - std::f32::consts::FRAC_PI_2);
     }
 
-    if !flags.chevron_appeared && *visibility != Visibility::Inherited {
-        flags.chevron_appeared = true;
+    if *visibility == Visibility::Hidden {
+        flags.chevron_count += 1;
     }
 
     *visibility = Visibility::Inherited;
