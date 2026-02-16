@@ -69,7 +69,8 @@ struct IntensityDisplay;
 fn spawn_intensity_display(mut commands: Commands) {
     commands.spawn((
         IntensityDisplay,
-        Text::new("Intensity: 0.00"),
+        //Text::new("Intensity: 0.00"),
+        Text::new(""),
         TextFont {
             font_size: 20.0,
             ..default()
@@ -106,7 +107,8 @@ fn adjust_intensity(
 
     if changed {
         if let Ok(mut text) = text_query.single_mut() {
-            **text = format!("Intensity: {:.2}", settings.intensity);
+            //**text = format!("Intensity: {:.2}", settings.intensity);
+            **text = format!("");
         }
     }
 }

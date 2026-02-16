@@ -11,3 +11,7 @@ Created for [Bevy Jam #7](https://itch.io/jam/bevy-jam-7). The theme was "Extrem
 ## Credits
 
 Thanks to [Quaternius](https://quaternius.itch.io/) for many assets and animations ([CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)).
+
+## License
+
+MIT or Apache-2.0
