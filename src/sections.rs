@@ -1,5 +1,4 @@
 /// Game sections and shared plot state.
-
 use bevy::prelude::*;
 
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States)]

@@ -14,7 +14,12 @@ impl Plugin for StairsPlugin {
             .add_systems(OnExit(Sections::Stairs), exit_stairs)
             .add_systems(
                 Update,
-                (stairs_movement, stairs_chevron, stairs_look_check, stairs_exit)
+                (
+                    stairs_movement,
+                    stairs_chevron,
+                    stairs_look_check,
+                    stairs_exit,
+                )
                     .chain()
                     .run_if(in_state(Sections::Stairs)),
             );
@@ -67,8 +72,11 @@ fn setup_stairs(
         commands.spawn((
             StairStep,
             SceneRoot(finger_scene.clone()),
-            Transform::from_xyz(0.0, y, z)
-                .with_scale(Vec3::new(FINGER_X_SCALE, FINGER_SCALE, FINGER_SCALE)),
+            Transform::from_xyz(0.0, y, z).with_scale(Vec3::new(
+                FINGER_X_SCALE,
+                FINGER_SCALE,
+                FINGER_SCALE,
+            )),
             DespawnOnExit(Sections::Stairs),
         ));
     }
@@ -162,8 +170,12 @@ fn stairs_chevron(
         dir * center.x.min(center.y) * 0.8 + center
     };
 
-    let clamped_x = screen_pos.x.clamp(CHEVRON_MARGIN, viewport_size.x - CHEVRON_MARGIN);
-    let clamped_y = screen_pos.y.clamp(CHEVRON_MARGIN, viewport_size.y - CHEVRON_MARGIN);
+    let clamped_x = screen_pos
+        .x
+        .clamp(CHEVRON_MARGIN, viewport_size.x - CHEVRON_MARGIN);
+    let clamped_y = screen_pos
+        .y
+        .clamp(CHEVRON_MARGIN, viewport_size.y - CHEVRON_MARGIN);
     node.left = Val::Px(clamped_x - 16.0);
     node.top = Val::Px(clamped_y - 16.0);
 
@@ -213,10 +225,7 @@ fn stairs_exit(
     }
 }
 
-fn exit_stairs(
-    mut commands: Commands,
-    mut chevron: Query<&mut Visibility, With<NpcChevron>>,
-) {
+fn exit_stairs(mut commands: Commands, mut chevron: Query<&mut Visibility, With<NpcChevron>>) {
     commands.insert_resource(GlobalAmbientLight::NONE);
     if let Ok(mut vis) = chevron.single_mut() {
         *vis = Visibility::Hidden;

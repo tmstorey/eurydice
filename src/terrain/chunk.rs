@@ -5,7 +5,7 @@ use bevy::prelude::*;
 use noiz::prelude::*;
 
 use super::{TerrainConfig, TerrainNoise};
-use crate::terrain::generation::{blend_factor, NoiseSampler, StaleRegion};
+use crate::terrain::generation::{NoiseSampler, StaleRegion, blend_factor};
 
 /// Actual vertex heights along each edge of a generated chunk mesh.
 /// Used to enforce exact height matching at boundaries with stale chunks.
@@ -120,8 +120,13 @@ pub fn generate_chunk_mesh(
             let height = stale
                 .and_then(|s| {
                     s.edge_heights.shared_height(
-                        chunk_x, chunk_z, xi, zi,
-                        s.grid_pos.0, s.grid_pos.1, res,
+                        chunk_x,
+                        chunk_z,
+                        xi,
+                        zi,
+                        s.grid_pos.0,
+                        s.grid_pos.1,
+                        res,
                     )
                 })
                 .unwrap_or_else(|| height_at(wx, wz));
@@ -167,7 +172,10 @@ pub fn generate_chunk_mesh(
         edge_heights.east[zi] = positions[zi * res + (res - 1)][1];
     }
 
-    let mut mesh = Mesh::new(PrimitiveTopology::TriangleList, RenderAssetUsages::default());
+    let mut mesh = Mesh::new(
+        PrimitiveTopology::TriangleList,
+        RenderAssetUsages::default(),
+    );
     mesh.insert_attribute(Mesh::ATTRIBUTE_POSITION, positions);
     mesh.insert_attribute(Mesh::ATTRIBUTE_NORMAL, normals);
     mesh.insert_indices(Indices::U32(indices));

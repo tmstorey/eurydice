@@ -12,10 +12,7 @@ impl Plugin for AwakenPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(Sections::Awaken), setup_awaken)
             .add_systems(OnExit(Sections::Awaken), exit_awaken)
-            .add_systems(
-                Update,
-                awaken_timer.run_if(in_state(Sections::Awaken)),
-            );
+            .add_systems(Update, awaken_timer.run_if(in_state(Sections::Awaken)));
     }
 }
 

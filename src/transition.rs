@@ -8,22 +8,18 @@ pub struct TransitionPlugin;
 
 impl Plugin for TransitionPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
-            OnEnter(Sections::Chase),
-            |commands: Commands| spawn_card(commands, "I: Dream"),
-        )
-        .add_systems(
-            OnEnter(Sections::Underworld),
-            |commands: Commands| spawn_card(commands, "II: Deep"),
-        )
-        .add_systems(
-            OnEnter(Sections::Stairs),
-            |commands: Commands| spawn_card(commands, "III: Gradient Ascent"),
-        )
-        .add_systems(
-            OnEnter(Sections::Awaken),
-            |commands: Commands| spawn_card(commands, "IV: Awakening"),
-        )
+        app.add_systems(OnEnter(Sections::Chase), |commands: Commands| {
+            spawn_card(commands, "I: Dream")
+        })
+        .add_systems(OnEnter(Sections::Underworld), |commands: Commands| {
+            spawn_card(commands, "II: Deep")
+        })
+        .add_systems(OnEnter(Sections::Stairs), |commands: Commands| {
+            spawn_card(commands, "III: Gradient Ascent")
+        })
+        .add_systems(OnEnter(Sections::Awaken), |commands: Commands| {
+            spawn_card(commands, "IV: Awakening")
+        })
         .add_systems(Update, fade_card);
     }
 }

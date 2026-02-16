@@ -11,8 +11,7 @@ impl Plugin for MenuPlugin {
         app.add_systems(OnEnter(Sections::Menu), setup_menu)
             .add_systems(
                 Update,
-                (button_visuals, button_actions, credits_back)
-                    .run_if(in_state(Sections::Menu)),
+                (button_visuals, button_actions, credits_back).run_if(in_state(Sections::Menu)),
             );
     }
 }

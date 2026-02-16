@@ -1,5 +1,4 @@
 /// Noise sampler management for chunk generation
-
 use bevy::prelude::*;
 use rand::Rng;
 
@@ -12,7 +11,7 @@ pub enum VisibleAxis {
     North,
     East,
     South,
-    West
+    West,
 }
 
 impl From<VisibleAxis> for Dir3 {
@@ -263,7 +262,8 @@ impl NoiseSampler {
         let new_visible_2d = new_visible.dir_2d();
         let snapped_along = (player_pos.dot(new_visible_2d) / chunk_size).floor() * chunk_size;
         let cross_2d = new_visible.left().dir_2d();
-        let new_origin = new_visible_2d * snapped_along + cross_2d * self.quadrant_origin.dot(cross_2d);
+        let new_origin =
+            new_visible_2d * snapped_along + cross_2d * self.quadrant_origin.dot(cross_2d);
 
         let new_left = random_orthogonal_dir3(self.left_axis);
         let new_center = self.left_axis;
@@ -294,7 +294,8 @@ impl NoiseSampler {
         let new_visible_2d = new_visible.dir_2d();
         let snapped_along = (player_pos.dot(new_visible_2d) / chunk_size).floor() * chunk_size;
         let cross_2d = new_visible.left().dir_2d();
-        let new_origin = new_visible_2d * snapped_along + cross_2d * self.quadrant_origin.dot(cross_2d);
+        let new_origin =
+            new_visible_2d * snapped_along + cross_2d * self.quadrant_origin.dot(cross_2d);
 
         let new_left = self.center_axis;
         let new_center = self.right_axis;
@@ -318,7 +319,6 @@ impl NoiseSampler {
             quadrant_origin: new_origin,
         }
     }
-
 }
 
 /// A chunk whose mesh was generated with a now-stale NoiseSampler.
@@ -372,7 +372,8 @@ fn random_orthogonal_dir3(dir: Dir3) -> Dir3 {
         let v = random_unit_vec3();
         let projected = v - v.dot(*dir) * *dir;
         if projected.length_squared() > 0.01 {
-            return Dir3::new(projected.normalize()).expect("Vec3 should always be valid direction");
+            return Dir3::new(projected.normalize())
+                .expect("Vec3 should always be valid direction");
         }
     }
 }

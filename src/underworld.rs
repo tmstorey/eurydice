@@ -163,7 +163,10 @@ fn generate_corridor_mesh(noise: &TerrainNoise) -> Mesh {
         }
     }
 
-    let mut mesh = Mesh::new(PrimitiveTopology::TriangleList, RenderAssetUsages::default());
+    let mut mesh = Mesh::new(
+        PrimitiveTopology::TriangleList,
+        RenderAssetUsages::default(),
+    );
     mesh.insert_attribute(Mesh::ATTRIBUTE_POSITION, positions);
     mesh.insert_attribute(Mesh::ATTRIBUTE_NORMAL, normals);
     mesh.insert_indices(Indices::U32(indices));
@@ -243,8 +246,7 @@ fn setup_underworld(
 
     // NPC at the near pool edge, inverted. Rotates upright to face the player.
     let pool_near_z = POOL_Z + POOL_SIZE * 0.5;
-    let npc_scene: Handle<Scene> =
-        asset_server.load(GltfAssetLabel::Scene(0).from_asset(NPC_PATH));
+    let npc_scene: Handle<Scene> = asset_server.load(GltfAssetLabel::Scene(0).from_asset(NPC_PATH));
     commands
         .spawn((
             UnderworldNpc,
@@ -292,17 +294,10 @@ fn underworld_terrain_follow(
         CORRIDOR_HALF_WIDTH - CLAMP_MARGIN,
     );
     let pool_edge = POOL_Z + POOL_SIZE * 0.5 + CLAMP_MARGIN;
-    transform.translation.z = transform
-        .translation
-        .z
-        .clamp(pool_edge, 0.0);
+    transform.translation.z = transform.translation.z.clamp(pool_edge, 0.0);
 
     // Follow floor height.
-    let floor_y = corridor_floor_height(
-        transform.translation.x,
-        transform.translation.z,
-        &noise,
-    );
+    let floor_y = corridor_floor_height(transform.translation.x, transform.translation.z, &noise);
     transform.translation.y = floor_y + EYE_HEIGHT;
 }
 
@@ -317,11 +312,8 @@ fn underworld_pool_check(
         return;
     };
 
-    let dist_to_pool = Vec2::new(
-        transform.translation.x,
-        transform.translation.z - POOL_Z,
-    )
-    .length();
+    let dist_to_pool =
+        Vec2::new(transform.translation.x, transform.translation.z - POOL_Z).length();
 
     if dist_to_pool < POOL_TRIGGER_DIST && look.pitch < POOL_TRIGGER_PITCH {
         state.phase = UnderworldPhase::Rotating;

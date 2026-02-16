@@ -5,8 +5,8 @@ use rand::Rng;
 
 use crate::player::Player;
 use crate::sections::{PlotFlags, Sections};
-use crate::terrain::{terrain_height, StaleChunk, TerrainConfig, TerrainNoise};
 use crate::terrain::generation::NoiseSampler;
+use crate::terrain::{StaleChunk, TerrainConfig, TerrainNoise, terrain_height};
 
 pub struct NpcPlugin;
 
@@ -26,9 +26,9 @@ impl Plugin for NpcPlugin {
 const NPC_PATH: &str = "character/character.gltf";
 
 // Animation indices (alphabetical order in the GLTF)
-const ANIM_IDLE: usize = 8;       // Idle_Loop
-const ANIM_JOG: usize = 15;       // Jog_Fwd_Loop
-const ANIM_SPRINT: usize = 31;    // Sprint_Loop
+const ANIM_IDLE: usize = 8; // Idle_Loop
+const ANIM_JOG: usize = 15; // Jog_Fwd_Loop
+const ANIM_SPRINT: usize = 31; // Sprint_Loop
 
 const SPRINT_SPEED: f32 = 9.8;
 const WAYPOINT_REACHED_DIST: f32 = 2.0;
@@ -160,7 +160,10 @@ fn npc_ai(
     };
 
     let npc_pos = Vec2::new(npc_transform.translation.x, npc_transform.translation.z);
-    let player_pos = Vec2::new(player_transform.translation.x, player_transform.translation.z);
+    let player_pos = Vec2::new(
+        player_transform.translation.x,
+        player_transform.translation.z,
+    );
     let dist_to_player = npc_pos.distance(player_pos);
 
     let mut switch_animation = None;
@@ -250,15 +253,13 @@ fn npc_movement(
             );
 
             *angle += CIRCLE_SPEED * dt;
-            let circle_pos =
-                player_pos + Vec2::new(angle.cos(), angle.sin()) * CIRCLE_RADIUS;
+            let circle_pos = player_pos + Vec2::new(angle.cos(), angle.sin()) * CIRCLE_RADIUS;
             transform.translation.x = circle_pos.x;
             transform.translation.z = circle_pos.y;
             // Face tangent to the circle (perpendicular to the radius).
             let tangent_angle = *angle + std::f32::consts::FRAC_PI_2;
             heading.0 = tangent_angle;
-            transform.rotation =
-                Quat::from_rotation_y(-heading.0 + std::f32::consts::FRAC_PI_2);
+            transform.rotation = Quat::from_rotation_y(-heading.0 + std::f32::consts::FRAC_PI_2);
         }
     }
 }
@@ -351,14 +352,17 @@ fn update_npc_chevron(
         }
     } else {
         // NPC is behind camera - flip the direction so chevron points correctly
-        Vec2::new(npc_view.x, npc_view.y).normalize_or_zero() * center.x.min(center.y)
-            + center
+        Vec2::new(npc_view.x, npc_view.y).normalize_or_zero() * center.x.min(center.y) + center
     };
 
     if npc_view.z < 0.0 {
         // NPC is in front - place chevron at projected position, no rotation.
-        let clamped_x = screen_pos.x.clamp(CHEVRON_MARGIN, viewport_size.x - CHEVRON_MARGIN);
-        let clamped_y = screen_pos.y.clamp(CHEVRON_MARGIN, viewport_size.y - CHEVRON_MARGIN);
+        let clamped_x = screen_pos
+            .x
+            .clamp(CHEVRON_MARGIN, viewport_size.x - CHEVRON_MARGIN);
+        let clamped_y = screen_pos
+            .y
+            .clamp(CHEVRON_MARGIN, viewport_size.y - CHEVRON_MARGIN);
         node.left = Val::Px(clamped_x - 16.0);
         node.top = Val::Px(clamped_y - 16.0);
         chevron_transform.rotation = Rot2::IDENTITY;

@@ -8,10 +8,7 @@ use bevy::input::mouse::MouseMotion;
 use bevy::prelude::*;
 use bevy::scene::SceneInstanceReady;
 use bevy::window::{CursorGrabMode, CursorOptions};
-use bevy::{
-    camera::Exposure,
-    post_process::bloom::Bloom,
-};
+use bevy::{camera::Exposure, post_process::bloom::Bloom};
 #[cfg(not(target_arch = "wasm32"))]
 use bevy::{
     light::AtmosphereEnvironmentMapLight,
@@ -27,19 +24,24 @@ impl Plugin for PlayerPlugin {
             .insert_resource(GlobalAmbientLight::NONE)
             .add_systems(
                 Update,
-                (toggle_cursor_grab, mouse_look, player_movement)
-                    .run_if(
-                        in_state(Sections::Chase)
-                            .or(in_state(Sections::Underworld))
-                            .or(in_state(Sections::Stairs)),
-                    ),
+                (toggle_cursor_grab, mouse_look, player_movement).run_if(
+                    in_state(Sections::Chase)
+                        .or(in_state(Sections::Underworld))
+                        .or(in_state(Sections::Stairs)),
+                ),
             )
             .add_systems(
                 OnEnter(Sections::Chase),
                 (reset_player, spawn_chase_light, set_sky_background),
             )
-            .add_systems(OnEnter(Sections::Underworld), (spawn_torch_arms, set_black_background))
-            .add_systems(OnEnter(Sections::Awaken), (despawn_arms, set_sky_background));
+            .add_systems(
+                OnEnter(Sections::Underworld),
+                (spawn_torch_arms, set_black_background),
+            )
+            .add_systems(
+                OnEnter(Sections::Awaken),
+                (despawn_arms, set_sky_background),
+            );
     }
 }
 
@@ -75,25 +77,30 @@ fn spawn_player(
     #[cfg(not(target_arch = "wasm32"))] mut scattering_mediums: ResMut<Assets<ScatteringMedium>>,
 ) {
     #[allow(unused_variables)]
-    let camera = commands.spawn((
-        Player,
-        PlayerLook { yaw: 0.0, pitch: 0.0 },
-        Camera3d::default(),
-        Projection::from(PerspectiveProjection {
-            fov: std::f32::consts::FRAC_PI_2 * 0.8,
-            near: 0.01,
-            ..default()
-        }),
-        Exposure { ev100: 10.0 },
-        Bloom::NATURAL,
-        Transform::from_xyz(0.0, 10.0, 0.0),
-        DreamSettings {
-            intensity: 0.0,
-            time: 0.0,
-            _align: 0.0,
-            _align2: 0.0,
-        },
-    )).id();
+    let camera = commands
+        .spawn((
+            Player,
+            PlayerLook {
+                yaw: 0.0,
+                pitch: 0.0,
+            },
+            Camera3d::default(),
+            Projection::from(PerspectiveProjection {
+                fov: std::f32::consts::FRAC_PI_2 * 0.8,
+                near: 0.01,
+                ..default()
+            }),
+            Exposure { ev100: 10.0 },
+            Bloom::NATURAL,
+            Transform::from_xyz(0.0, 10.0, 0.0),
+            DreamSettings {
+                intensity: 0.0,
+                time: 0.0,
+                _align: 0.0,
+                _align2: 0.0,
+            },
+        ))
+        .id();
 
     #[cfg(not(target_arch = "wasm32"))]
     commands.entity(camera).insert((

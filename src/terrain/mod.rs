@@ -4,12 +4,12 @@ pub(crate) mod generation;
 mod objects;
 
 use bevy::prelude::*;
-use noiz::prelude::{*, common_noise::*};
+use noiz::prelude::{common_noise::*, *};
 use std::collections::HashSet;
 
 use crate::player::Player;
 use crate::sections::Sections;
-use chunk::{generate_chunk_mesh, ChunkEdgeHeights};
+use chunk::{ChunkEdgeHeights, generate_chunk_mesh};
 
 pub use chunk::terrain_height;
 use generation::{DebugColour, NoiseSampler, StaleRegion, VisibleAxis};
@@ -49,11 +49,11 @@ impl Plugin for TerrainPlugin {
 }
 
 #[derive(Resource)]
-pub struct TerrainNoise(pub Noise::<Fbm<Perlin>>);
+pub struct TerrainNoise(pub Noise<Fbm<Perlin>>);
 
 impl Default for TerrainNoise {
     fn default() -> TerrainNoise {
-        let mut noise: Noise::<Fbm<Perlin>> = Noise::<Fbm<Perlin>>::default();
+        let mut noise: Noise<Fbm<Perlin>> = Noise::<Fbm<Perlin>>::default();
         noise.set_seed(42);
         noise.set_frequency(2.0);
         TerrainNoise(noise)
@@ -125,10 +125,7 @@ const EYE_HEIGHT: f32 = 1.5;
 /// Max chunks to generate per frame to avoid hitches.
 const MAX_SPAWNS_PER_FRAME: usize = 64;
 
-fn setup_terrain_material(
-    mut commands: Commands,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-) {
+fn setup_terrain_material(mut commands: Commands, mut materials: ResMut<Assets<StandardMaterial>>) {
     let by_colour = DebugColour::ALL.map(|colour| {
         let base: Color = colour.into();
         materials.add(StandardMaterial {
@@ -159,9 +156,15 @@ fn detect_rotation(
     let forward = *transform.forward();
 
     let sector = if forward.z.abs() >= forward.x.abs() {
-        if forward.z < 0.0 { VisibleAxis::North } else { VisibleAxis::South }
+        if forward.z < 0.0 {
+            VisibleAxis::North
+        } else {
+            VisibleAxis::South
+        }
+    } else if forward.x > 0.0 {
+        VisibleAxis::East
     } else {
-        if forward.x > 0.0 { VisibleAxis::East } else { VisibleAxis::West }
+        VisibleAxis::West
     };
 
     if sector == sampler.visible_axis {
@@ -193,7 +196,7 @@ fn detect_rotation(
         // Only update stale if it's empty or tracking a different chunk.
         // When the player hasn't moved, the mesh is still from the
         // originally-recorded sampler, so we keep that one.
-        if !stale.0.as_ref().is_some_and(|s| s.grid_pos == player_grid) {
+        if stale.0.as_ref().is_none_or(|s| s.grid_pos != player_grid) {
             let player_edges = chunks
                 .iter()
                 .find(|(_, chunk, _)| chunk.grid_pos == player_grid)
@@ -228,7 +231,11 @@ fn detect_rotation(
         let center_x = (chunk.grid_pos.0 as f32 + 0.5) * config.chunk_size;
         let center_z = (chunk.grid_pos.1 as f32 + 0.5) * config.chunk_size;
         if Vec2::new(center_x, center_z).dot(new_visible_2d) < origin_along {
-            if stale.0.as_ref().is_some_and(|s| s.grid_pos == chunk.grid_pos) {
+            if stale
+                .0
+                .as_ref()
+                .is_some_and(|s| s.grid_pos == chunk.grid_pos)
+            {
                 stale.0 = None;
             }
             commands.entity(entity).despawn();
@@ -302,7 +309,11 @@ fn manage_chunks(
         let behind = center.dot(visible_2d) < player_along;
 
         if too_far || behind {
-            if stale.0.as_ref().is_some_and(|s| s.grid_pos == chunk.grid_pos) {
+            if stale
+                .0
+                .as_ref()
+                .is_some_and(|s| s.grid_pos == chunk.grid_pos)
+            {
                 stale.0 = None;
             }
             commands.entity(entity).despawn();
@@ -338,7 +349,8 @@ fn manage_chunks(
 
             let quadrant = sampler.quadrant_at(center.x, center.y);
             let colour = colours.quadrant_colours[quadrant.index()];
-            let (mesh, edge_heights) = generate_chunk_mesh(cx, cz, &config, &noise, &sampler, stale_ref);
+            let (mesh, edge_heights) =
+                generate_chunk_mesh(cx, cz, &config, &noise, &sampler, stale_ref);
             let mesh_handle = meshes.add(mesh);
 
             commands

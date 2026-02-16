@@ -164,5 +164,9 @@ fn pick(items: &[Handle<Scene>], frac: f32) -> &Handle<Scene> {
 
 /// GPU-style hash producing a uniform value in [0, 1) from a 3D point.
 fn hash_vec3(p: Vec3) -> f32 {
-    p.dot(Vec3::new(127.1, 311.7, 74.7)).sin().mul_add(43758.5453, 0.0).fract().abs()
+    p.dot(Vec3::new(127.1, 311.7, 74.7))
+        .sin()
+        .mul_add(43758.545, 0.0)
+        .fract()
+        .abs()
 }

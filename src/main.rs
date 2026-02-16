@@ -1,4 +1,8 @@
 // Main
+#![allow(clippy::collapsible_if)]
+#![allow(clippy::type_complexity)]
+#![allow(clippy::too_many_arguments)]
+
 mod awaken;
 mod chase;
 mod dream;
@@ -6,13 +10,13 @@ mod menu;
 mod npc;
 mod player;
 mod sections;
+mod stairs;
 mod terrain;
 mod transition;
-mod stairs;
 mod underworld;
 
-use bevy::prelude::*;
 use awaken::AwakenPlugin;
+use bevy::prelude::*;
 use chase::ChasePlugin;
 use dream::DreamPlugin;
 use menu::MenuPlugin;

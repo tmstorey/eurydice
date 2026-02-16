@@ -1,5 +1,4 @@
 // Chase section
-
 use bevy::prelude::*;
 
 use crate::dream::DreamSettings;
@@ -23,14 +22,10 @@ impl Plugin for ChasePlugin {
     }
 }
 
-fn reset_chase_state(
-    mut plot_flags: ResMut<PlotFlags>,
-    mut rotation_count: ResMut<RotationCount>,
-) {
+fn reset_chase_state(mut plot_flags: ResMut<PlotFlags>, mut rotation_count: ResMut<RotationCount>) {
     *plot_flags = PlotFlags::default();
     rotation_count.0 = 0;
 }
-
 
 /// Base dream intensity increase per second.
 const DREAM_BASE_RATE: f32 = 0.005;
