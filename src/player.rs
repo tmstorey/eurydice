@@ -4,15 +4,16 @@ use std::time::Duration;
 // First-person camera controller with mouse look and keyboard movement.
 use crate::dream::DreamSettings;
 use crate::sections::Sections;
+use bevy::camera::Exposure;
 use bevy::input::mouse::MouseMotion;
 use bevy::prelude::*;
 use bevy::scene::SceneInstanceReady;
 use bevy::window::{CursorGrabMode, CursorOptions};
-use bevy::{camera::Exposure, post_process::bloom::Bloom};
 #[cfg(not(target_arch = "wasm32"))]
 use bevy::{
     light::AtmosphereEnvironmentMapLight,
     pbr::{Atmosphere, AtmosphereSettings, ScatteringMedium},
+    post_process::bloom::Bloom,
 };
 
 pub struct PlayerPlugin;
@@ -91,7 +92,6 @@ fn spawn_player(
                 ..default()
             }),
             Exposure { ev100: 10.0 },
-            Bloom::NATURAL,
             Transform::from_xyz(0.0, 10.0, 0.0),
             DreamSettings {
                 intensity: 0.0,
@@ -107,6 +107,7 @@ fn spawn_player(
         Atmosphere::earthlike(scattering_mediums.add(ScatteringMedium::default())),
         AtmosphereSettings::default(),
         AtmosphereEnvironmentMapLight::default(),
+        Bloom::NATURAL,
     ));
 }
 

@@ -182,6 +182,8 @@ fn spawn_credits_overlay(commands: &mut Commands) {
                 "",
                 "Made with Bevy",
                 "For Bevy Jam #7",
+                "",
+                "Based on the many problems with generative AI",
             ];
             for line in lines {
                 parent.spawn((
